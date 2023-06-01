@@ -1,16 +1,7 @@
-<template>
-  <v-container>
-    <v-row no-gutters class="d-flex justify-center align-center">
-      <v-col cols="12" md="3" class="border">
-        <v-sheet class="ma-2 pa-2">{{ inputText }}</v-sheet>
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import Credited from "./Credited.vue";
 
 const props = defineProps({
   card: {
@@ -18,7 +9,6 @@ const props = defineProps({
     required: false,
   },
 });
-
 
 const inputText = ref("");
 const router = useRouter();
@@ -31,3 +21,22 @@ setTimeout(() => {
   router.push("/");
 }, 60000); // 60000 milissegundos = 60 segundos
 </script>
+
+<template>
+  <v-container>
+    <v-row no-gutters class="d-flex justify-center align-center">
+      <v-col cols="12" md="3">
+        <v-sheet class="ma-2 pa-2 custom-background">{{ inputText }}</v-sheet>
+      </v-col>
+    </v-row>
+    <Credited />
+  </v-container>
+</template>
+
+<style scoped>
+.custom-background {
+  background-color: #FFF5B8; 
+  border-radius: 8px;
+  text-align: center;
+}
+</style>
