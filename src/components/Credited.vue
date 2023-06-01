@@ -1,5 +1,4 @@
 <template>
-  <h1>Olá Amigo, você tem</h1>
   <v-container>
     <v-row>
       <v-col cols="12" md="12">
@@ -50,13 +49,8 @@
 </template>
 
 <style scoped>
-h1 {
-  text-align: center;
-  font-size: 50px;
-  font-family: 'Open Sans', sans-serif;
-}
+.v-card-title {
+font-family: 'Open Sans', sans-serif !important;
 
-v.card {
-  background-color: red;
 }
 </style>

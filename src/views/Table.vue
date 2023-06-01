@@ -26,7 +26,7 @@ const route = useRoute();
         <v-sheet class="ma-2 pa-2">Tipo</v-sheet>
       </v-col>
 
-      <v-col v-for="n in 96" :key="n" cols="12" md="3" class="border">
+      <v-col v-for="n in 52" :key="n" cols="12" md="3" class="border">
         <v-sheet> Testando</v-sheet>
       </v-col>
     </v-row>
