@@ -10,7 +10,7 @@ console.log(route.params.card);
 
 <template>
   <v-container fluid class="fill-height">
-    <NumberCard />
+    <NumberCard :card="route.params.card"  />
     <v-row no-gutters>
       <v-col cols="12" md="3" class="border">
         <v-sheet class="ma-2 pa-2">Lugar</v-sheet>

@@ -9,17 +9,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, defineProps } from "vue";
+import { useRouter } from "vue-router";
+
+const props = defineProps({
+  card: {
+    type: String,
+    required: false,
+  },
+});
 
 const inputText = ref("");
 const router = useRouter();
 
-
 onMounted(() => {
-  inputText.value = router.currentRoute.value.query.text || "";
-  setTimeout(() => {
-    router.push("/");
-  }, 60000); // 60000 milissegundos = 60 segundos
+  inputText.value = router.currentRoute.value.params.card || "";
 });
+
+setTimeout(() => {
+  router.push("/");
+}, 60000); // 60000 milissegundos = 60 segundos
 </script>
