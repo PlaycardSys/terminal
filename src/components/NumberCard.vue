@@ -19,6 +19,7 @@ const props = defineProps({
   },
 });
 
+
 const inputText = ref("");
 const router = useRouter();
 
