@@ -3,9 +3,7 @@ import { useRoute, useRouter } from 'vue-router';
 import NumberCard from "../components/NumberCard.vue";
 
 const route = useRoute();
-const cardValue = route.params.card;
 
-console.log(route.params.card);
 </script>
 
 <template>
