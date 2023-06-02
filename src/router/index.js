@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Video from "../views/Video.vue";
 import Table from "../views/Table.vue";
+import Greet from "../components/Greet.vue";
 
 const routes = [
     {
         path: '/',
         name: 'video',
-        component: Video,
+        component: Greet,
         meta: {
             transition: 'fade'
         }
