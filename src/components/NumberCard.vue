@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import Credited from "./Credited.vue";
+import CardInfo from "./CardInfo.vue";
 
 const props = defineProps({
   card: {
@@ -29,13 +29,13 @@ setTimeout(() => {
         <v-sheet class="ma-2 pa-2 custom-background">{{ inputText }}</v-sheet>
       </v-col>
     </v-row>
-    <Credited />
+    <CardInfo />
   </v-container>
 </template>
 
 <style scoped>
 .custom-background {
-  background-color: #FFF5B8; 
+  background-color: #F9F9FB; 
   border-radius: 8px;
   text-align: center;
 }
