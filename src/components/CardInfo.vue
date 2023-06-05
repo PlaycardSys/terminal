@@ -53,6 +53,10 @@
   </v-container>
 </template>
 
+<script setup>
+
+</script>
+
 <style scoped>
 .v-card-title {
   font-family: 'Open Sans', sans-serif !important;
