@@ -6,9 +6,10 @@ const route = useRoute();
 </script>
 
 <template>
-  <NumberCard :card="route.params.card" />
+ <NumberCard :card="route.params.card" />
   <div class="table-container">
-    <v-table theme="dark"  class="border-radius"> 
+    <div class="v-responsive"> 
+    <v-table theme="dark" class="border-radius">
       <thead>
         <tr class="back-color">
           <th class="text-center text-lg-h5 rows-boders">Operação</th>
@@ -26,6 +27,7 @@ const route = useRoute();
         </tr>
       </tbody>
     </v-table>
+  </div>
   </div>
 </template>
 
@@ -60,11 +62,9 @@ export default {
 }
 
 .back-color {
-background-color: ;
+background-color:#F9F9FB ;
 }
-.text-center {#F9F9FB
-  color:black !important;
+.text-center {
+  color: #000 !important;
 }
-
-
 </style>

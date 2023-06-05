@@ -3,6 +3,8 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import CardInfo from "./CardInfo.vue";
 
+
+
 const props = defineProps({
   card: {
     type: String,
@@ -29,8 +31,8 @@ setTimeout(() => {
         <v-sheet class="ma-2 pa-2 custom-background">{{ inputText }}</v-sheet>
       </v-col>
     </v-row>
-    <CardInfo />
   </v-container>
+  <CardInfo />
 </template>
 
 <style scoped>
