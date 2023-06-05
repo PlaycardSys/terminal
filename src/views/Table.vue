@@ -1,40 +1,70 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from "vue-router";
 import NumberCard from "../components/NumberCard.vue";
 
 const route = useRoute();
-
 </script>
 
 <template>
-  <v-container fluid class="fill-height">
-    <NumberCard :card="route.params.card"  />
-    <v-row no-gutters>
-      <v-col cols="12" md="3" class="border">
-        <v-sheet class="ma-2 pa-2">Lugar</v-sheet>
-      </v-col>
-
-      <v-col cols="12" md="3" class="border">
-        <v-sheet class="ma-2 pa-2">Operação</v-sheet>
-      </v-col>
-
-      <v-col cols="12" md="3" class="border">
-        <v-sheet class="ma-2 pa-2">Valor</v-sheet>
-      </v-col>
-
-      <v-col cols="12" md="3" class="border">
-        <v-sheet class="ma-2 pa-2">Tipo</v-sheet>
-      </v-col>
-
-      <v-col v-for="n in 52" :key="n" cols="12" md="3" class="border">
-        <v-sheet> Testando</v-sheet>
-      </v-col>
-    </v-row>
-  </v-container>
+ <NumberCard :card="route.params.card" />
+  <div class="table-container">
+    <div class="v-responsive"> 
+    <v-table theme="dark" class="border-radius">
+      <thead>
+        <tr class="back-color">
+          <th class="text-center text-lg-h5 rows-boders">Operação</th>
+          <th class="text-center text-lg-h5 rows-boders">Operação</th>
+          <th class="text-center text-lg-h5 rows-boders">Operação</th>
+          <th class="text-center text-lg-h5 rows-boders">Operação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in 8" :key="item.name">
+          <td class="rows-boders">{{ item.name }}</td>
+          <td class="rows-boders">{{ item.name }}</td>
+          <td class="rows-boders">{{ item.name }}</td>
+          <td class="rows-boders">{{ item.name }}</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </div>
+  </div>
 </template>
 
-
-
+<script>
+export default {
+  data() {
+    return {
+      desserts: [
+        {
+          name: "Teste",
+        },
+      ],
+    };
+  },
+};
+</script>
 <style scoped>
+.border-radius {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
 
+.rows-boders {
+  border: 1px solid #e0e0e0;
+}
+
+.v-table {
+  border: 1px solid #e0e0e0;
+  background-color:   #313A46 ;
+}
+
+.back-color {
+background-color:#F9F9FB ;
+}
+.text-center {
+  color: #000 !important;
+}
 </style>

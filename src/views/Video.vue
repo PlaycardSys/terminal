@@ -25,6 +25,7 @@ function checkAndRedirect() {
 </template>
 
 
-<style scoped>
+<style>
+
 
 </style>
