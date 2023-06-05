@@ -25,13 +25,7 @@ setTimeout(() => {
 </script>
 
 <template>
-  <v-container>
-    <v-row no-gutters class="d-flex justify-center align-center">
-      <v-col cols="12" md="3">
-        <v-sheet class="ma-2 pa-2 custom-background">{{ inputText }}</v-sheet>
-      </v-col>
-    </v-row>
-  </v-container>
+
   <CardInfo />
 </template>
 
@@ -41,4 +35,4 @@ setTimeout(() => {
   border-radius: 8px;
   text-align: center;
 }
-</style>
+</style>  

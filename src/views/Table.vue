@@ -1,5 +1,6 @@
 <template>
   <div class="table-container">
+  <NumberCard />
     <div class="v-responsive">
       <v-table theme="dark" class="border-radius">
         <thead>
