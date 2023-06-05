@@ -7,14 +7,14 @@ const name = ref("");
 
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  greetMsg.value = await invoke("event_get_by_id", { card: name.value });
+  greetMsg.value = await invoke("card_get_by_id", { card: name.value });
 }
 </script>
 
 <template>
   <div class="card">
     <input id="greet-input" v-model="name" placeholder="Enter a name..." />
-    <button type="button" @click="greet()">Consultar cartão</button>
+    <button type="button" @click="greet()">Consultar cartão 0.1.4</button>
   </div>
 
   <p>{{ greetMsg }}</p>
