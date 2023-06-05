@@ -1,6 +1,5 @@
 <template>
   <div class="table-container">
-  <NumberCard :card="route.params.card" />
     <div class="v-responsive">
       <v-table theme="dark" class="border-radius">
         <thead>
