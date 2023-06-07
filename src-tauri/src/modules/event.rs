@@ -7,7 +7,7 @@ use crate::config::db::DbConnection;
 #[derive(Debug, Serialize, Deserialize)]
 struct EventsById {
     created_at: String,
-    card_id: i32,
+    card_id: String,
     class: String,
     event: String,
     amount: String,

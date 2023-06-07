@@ -7,7 +7,7 @@ use crate::config::db::DbConnection;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct TimecardById {
-    card_id: i32,
+    card_id: String,
     is_started: bool,
     time: i32,
     started_at: String,

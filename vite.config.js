@@ -9,7 +9,7 @@ export default defineConfig(async () => ({
         template: { transformAssetUrls }
       }),
       vuetify({
-        autoImport: true
+        autoImport: true,
       }),
   ],
 

@@ -7,7 +7,7 @@ use crate::config::db::DbConnection;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CardById {
-    card_id: i32,
+    card_id: String,
     cpf: Option<String>,
     alias: Option<String>,
     type_card: i32,
@@ -32,7 +32,7 @@ pub fn get_by_id(card: &str) -> JsonResult<String> {
         Ok(rows) => {
             rows.into_iter().map(|row| {
 
-                let card_id= row.get("card_id").unwrap_or(0);
+                let card_id = row.get("card_id").unwrap();
                 let cpf= row.get("cpf");
                 let alias= row.get("alias").unwrap_or_else(|| Some("".to_string()));
                 let type_card= row.get("type").unwrap();

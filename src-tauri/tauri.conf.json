@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "playcardsys-terminal",
-    "version": "0.1.3"
+    "version": "0.1.4"
   },
   "tauri": {
     "allowlist": {
@@ -41,6 +41,7 @@
     "updater": {
       "active": true,
       "endpoints": [
+        "http://localhost:3000/updater",
         "https://gist.githubusercontent.com/DanielScapulatempo/af3319fcadf0b62963e7bfa8865a6a63/raw"
       ],
       "dialog": true,
@@ -55,7 +56,7 @@
         "height": 600,
         "center": true,
         "focus": true,
-        "decorations": false,
+        "decorations": true,
         "alwaysOnTop": false
       }
     ]
