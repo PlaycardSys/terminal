@@ -1,8 +1,9 @@
 <template>
-    <v-app>
-      <router-view></router-view>
-    </v-app>
+  <v-app class="bg-background">
+    <router-view></router-view>
+  </v-app>
 </template>
 
-<script setup>
-</script>
+<style lang="scss">
+
+</style>
