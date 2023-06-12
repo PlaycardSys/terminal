@@ -1,9 +1,7 @@
 <template>
-  <v-app class="bg-background">
+  <v-app>
     <router-view></router-view>
   </v-app>
 </template>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>
