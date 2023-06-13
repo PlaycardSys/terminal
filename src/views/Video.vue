@@ -8,15 +8,12 @@
       src="../assets/videos/video-terminal.mp4"
     ></video>
   </div>
-  
-    
-    <v-text-field
-      v-show="showTextField"
-      autofocus
-      v-model="cardNumber"
-      @keydown.enter="checkAndRedirect"
-    ></v-text-field>
-  
+  <v-text-field
+    v-show="showTextField"
+    autofocus
+    v-model="cardNumber"
+    @keydown.enter="checkAndRedirect"
+  ></v-text-field>
 </template>
 
 <script setup>
@@ -50,5 +47,6 @@ function checkAndRedirect() {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  position: absolute;
 }
 </style>
