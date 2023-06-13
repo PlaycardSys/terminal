@@ -8,14 +8,15 @@
       src="../assets/videos/video-terminal.mp4"
     ></video>
   </div>
-  <v-container>
+  
+    
     <v-text-field
-      v-if="showTextField"
+      v-show="showTextField"
       autofocus
       v-model="cardNumber"
       @keydown.enter="checkAndRedirect"
     ></v-text-field>
-  </v-container>
+  
 </template>
 
 <script setup>
@@ -24,7 +25,7 @@ import { useRouter } from "vue-router";
 
 const cardNumber = ref("");
 const router = useRouter();
-const showTextField = ref(true);
+const showTextField = false;
 
 function checkAndRedirect() {
   if (cardNumber.value.trim() !== "") {
