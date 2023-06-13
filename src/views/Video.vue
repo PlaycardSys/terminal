@@ -5,7 +5,7 @@
       autoplay
       loop
       muted
-      src="../videos/video-terminal.mp4"
+      src="../assets/videos/video-terminal.mp4"
     ></video>
   </div>
   <v-container>
