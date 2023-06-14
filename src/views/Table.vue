@@ -116,6 +116,10 @@ onMounted(async () => {
     });
   }
 
+  if (cardData.blocked_at != '') {
+    partyMsg.value = `Cartão bloqueado !`;
+  }
+
   // Playcard
   if (cardData.type_card == 1) {
     const cardEvents = await getEvents(cardId);
@@ -154,7 +158,7 @@ onMounted(async () => {
 
 setTimeout(() => {
   router.push("/");
-}, 800000);
+}, 8000);
 </script>
 
 <style>
