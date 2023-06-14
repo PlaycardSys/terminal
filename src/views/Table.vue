@@ -7,29 +7,36 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-card>
-          <v-card-text v-if="returnMsg !== ''"> {{ returnMsg }} </v-card-text>
+        
+        <v-card v-if="returnMsg !== ''">
+          <v-card-text>{{ returnMsg }}</v-card-text>
         </v-card>
-        <v-table v-if="events.length > 0" fixed-header :height="viewportHeight">
-          <thead>
-            <tr>
-              <th class="text-center">Data/Hora</th>
-              <th class="text-center">Playcard</th>
-              <th class="text-center">Operação</th>
-              <th class="text-center">Tipo</th>
-              <th class="text-center">Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="event in events" :key="event.created_at">
-              <td>{{ event.created_at }}</td>
-              <td>{{ event.card_id }}</td>
-              <td>{{ event.class }}</td>
-              <td>{{ event.event }}</td>
-              <td>{{ event.amount }}</td>
-            </tr>
-          </tbody>
-        </v-table>
+
+        <v-card v-if="events.length > 0">
+          <v-card-text>
+            <v-table fixed-header :height="viewportHeight" density="compact">
+              <thead>
+                <tr>
+                  <th class="text-center">Data/Hora</th>
+                  <th class="text-center">Playcard</th>
+                  <th class="text-center">Operação</th>
+                  <th class="text-center">Tipo</th>
+                  <th class="text-center">Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="event in events" :key="event.created_at">
+                  <td>{{ event.created_at }}</td>
+                  <td>{{ event.card_id }}</td>
+                  <td>{{ event.class }}</td>
+                  <td>{{ event.event }}</td>
+                  <td>{{ event.amount }}</td>
+                </tr>
+              </tbody>
+            </v-table>
+          </v-card-text>
+        </v-card>
+
       </v-col>
     </v-row>
   </v-container>
@@ -55,7 +62,7 @@ const updateViewportHeight = () => {
   ).offsetHeight;
   const viewHeight = window.innerHeight;
 
-  viewportHeight.value = viewHeight - (headerHeight + 32);
+  viewportHeight.value = viewHeight - (headerHeight + 64);
 };
 
 window.addEventListener("resize", updateViewportHeight);
@@ -108,7 +115,8 @@ function msToTime(duration) {
 
 onMounted(async () => {
   const cardId = route.params.cardId;
-
+  console.log(cardId);
+  
   // Card Type
   const cardData = await getCardType(cardId);
   if (cardData.length == 0) {
@@ -117,7 +125,7 @@ onMounted(async () => {
     });
   }
 
-  if (cardData.blocked_at != "") {
+  if ((cardData.blocked_at != null) && (cardData.blocked_at != "")) {
     returnMsg.value = `Cartão bloqueado !`;
   }
 

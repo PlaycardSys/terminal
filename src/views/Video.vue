@@ -22,12 +22,19 @@ import { useRouter } from "vue-router";
 const cardNumber = ref("");
 const router = useRouter();
 
+function formatCardNumber(cardId) {
+  const regex = /\d+/g;
+  const numbersArray = cardId.match(regex);
+  const numbersString = numbersArray ? numbersArray.join('') : '';
+  return numbersString;
+}
+
 function checkAndRedirect() {
   if (cardNumber.value.trim() !== "") {
     router.push({
       name: "table",
       params: {
-        cardId: cardNumber.value,
+        cardId: formatCardNumber(cardNumber.value),
       },
     });
   }
