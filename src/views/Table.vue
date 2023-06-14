@@ -2,18 +2,19 @@
   <v-container fluid>
     <v-row>
       <v-col v-for="item in infoList">
-        <TableCardInfo
-            :info="item"
-            :key="item.name"
-        />
+        <TableCardInfo :info="item" :key="item.name" />
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
-
         <p v-if="partyMsg != ''">{{ partyMsg }}</p>
 
-        <v-table v-if="events.length > 0" fixed-header height="300px">
+        <v-table
+          v-if="events.length > 0"
+          fixed-header
+          :height="viewportHeight"
+          hide-overflow
+        >
           <thead>
             <tr>
               <th class="text-center">Data/Hora</th>
@@ -33,124 +34,130 @@
             </tr>
           </tbody>
         </v-table>
-
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-  import { useRoute, useRouter } from 'vue-router';
-  import { onMounted, ref } from 'vue';
-  import { invoke } from "@tauri-apps/api/tauri";
-  import TableCardInfo from "../components/TableCardInfo.vue";
+import { useRoute, useRouter } from "vue-router";
+import { onMounted, ref } from "vue";
+import { invoke } from "@tauri-apps/api/tauri";
+import TableCardInfo from "../components/TableCardInfo.vue";
 
-  const router = useRouter();
-  const route = useRoute();
+const router = useRouter();
+const route = useRoute();
 
-  const events = ref([]);
-  const infoList = ref([]);
-  const partyMsg = ref('');
+const events = ref([]);
+const infoList = ref([]);
+const partyMsg = ref("");
+const viewportHeight = ref(0);
 
-  async function getCardType(cardId) {
-    const response = await invoke("card_get_by_id", { card: cardId });
-    const card = await JSON.parse(response);
+const updateViewportHeight = () => {
+  const headerHeight = document.querySelector(
+    "#app > div > div > div > div:nth-child(1)"
+  ).offsetHeight;
+  const viewHeight = window.innerHeight;
 
-    if (card.length > 0) {
-      infoList.value.push(
-        { "name": "Crédito",    "amount" : card[0].credits },
-        { "name": "Bônus",      "amount" : card[0].bonus },
-        { "name": "CredPromo",  "amount" : card[0].credpromo },
-        { "name": "Tickets",    "amount" : card[0].tickets }
-      );
+  viewportHeight.value = viewHeight - (headerHeight + 32);
+};
 
-      return card[0]
-    }
+window.addEventListener("resize", updateViewportHeight);
 
-    return [];
+async function getCardType(cardId) {
+  const response = await invoke("card_get_by_id", { card: cardId });
+  const card = await JSON.parse(response);
+
+  if (card.length > 0) {
+    infoList.value.push(
+      { name: "Crédito", amount: card[0].credits },
+      { name: "Bônus", amount: card[0].bonus },
+      { name: "CredPromo", amount: card[0].credpromo },
+      { name: "Tickets", amount: card[0].tickets }
+    );
+
+    return card[0];
   }
 
-  async function getEvents(cardId) {
-    return await invoke("event_get_by_id", { card: cardId });
+  return [];
+}
+
+async function getEvents(cardId) {
+  return await invoke("event_get_by_id", { card: cardId });
+}
+
+async function getPartyInfo(cardId) {
+  const response = await invoke("timecard_get_by_id", { card: cardId });
+  const party = await JSON.parse(response);
+
+  if (party.length > 0) {
+    return party[0];
   }
 
-  async function getPartyInfo(cardId) {
-    const response = await invoke("timecard_get_by_id", { card: cardId });
-    const party = await JSON.parse(response);
+  return [];
+}
 
-    if (party.length > 0) {
-      return party[0];
-    }
+function msToTime(duration) {
+  let milliseconds = Math.floor((duration % 1000) / 100),
+    seconds = Math.floor((duration / 1000) % 60),
+    minutes = Math.floor((duration / (1000 * 60)) % 60),
+    hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-    return [];
+  hours = hours < 10 ? "0" + hours : hours;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+
+  return hours + ":" + minutes;
+}
+
+onMounted(async () => {
+  const cardId = route.params.cardId;
+
+  // Card Type
+  const cardData = await getCardType(cardId);
+  if (cardData.length == 0) {
+    await router.push({
+      name: "not-found",
+    });
   }
 
-  function msToTime(duration) {
-    let milliseconds = Math.floor((duration % 1000) / 100),
-      seconds = Math.floor((duration / 1000) % 60),
-      minutes = Math.floor((duration / (1000 * 60)) % 60),
-      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-    hours = (hours < 10) ? "0" + hours : hours;
-    minutes = (minutes < 10) ? "0" + minutes : minutes;
-    seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-    return hours + ":" + minutes;
+  // Playcard
+  if (cardData.type_card == 1) {
+    const cardEvents = await getEvents(cardId);
+    events.value = JSON.parse(cardEvents);
+    updateViewportHeight();
   }
 
-  onMounted(async () => {
-    const cardId = route.params.cardId;
-    
-    // Card Type
-    const cardData = await getCardType(cardId);
-    if (cardData.length == 0) {
+  //Timecard
+  if (cardData.type_card == 2) {
+    const partyInfo = await getPartyInfo(cardId);
+
+    if (partyInfo.length == 0) {
       await router.push({
-        name: 'not-found'
+        name: "not-found",
       });
     }
 
-    // Playcard
-    if (cardData.type_card == 1) {
-      const cardEvents = await getEvents(cardId);
-      events.value = JSON.parse(cardEvents);
+    const dateEndedAt = new Date(partyInfo.ended_at);
+    const dateNow = new Date();
+
+    if (!partyInfo.is_started) {
+      const timeLeft = msToTime(partyInfo.time * 60000);
+      partyMsg.value = `Cartão não utilizado. Você tem ${timeLeft}h para se divertir !`;
     }
 
-    //Timecard
-    if (cardData.type_card == 2) {
-      
-      const partyInfo = await getPartyInfo(cardId);
-      
-      if (partyInfo.length == 0) {
-        await router.push({
-          name: 'not-found'
-        });
-      }
-
-      const dateEndedAt = new Date(partyInfo.ended_at);
-      const dateNow = new Date();
-
-      if (!partyInfo.is_started) {
-        const timeLeft = msToTime(partyInfo.time * 60000);
-        partyMsg.value = `Cartão não utilizado. Você tem ${timeLeft}h para se divertir !`
-      }
-
-      if (partyInfo.is_started && (dateEndedAt < dateNow)) {
-        partyMsg.value = `Acabou a diversão !`
-      }
-
-      if (partyInfo.is_started && (dateEndedAt >= dateNow)) {
-        const timeLeft = msToTime(dateEndedAt - dateNow);
-        partyMsg.value = `Você ainda tem ${timeLeft}h para se divertir !`
-      }
-
+    if (partyInfo.is_started && dateEndedAt < dateNow) {
+      partyMsg.value = `Acabou a diversão !`;
     }
 
-    
-    
-  });
-  
-  setTimeout(() => {
-    router.push("/");
-  }, 8000);
+    if (partyInfo.is_started && dateEndedAt >= dateNow) {
+      const timeLeft = msToTime(dateEndedAt - dateNow);
+      partyMsg.value = `Você ainda tem ${timeLeft}h para se divertir !`;
+    }
+  }
+});
 
+setTimeout(() => {
+  router.push("/");
+}, 800000);
 </script>
