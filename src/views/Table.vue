@@ -7,10 +7,12 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        
-        <v-card v-if="returnMsg !== ''">
-          <v-card-text>{{ returnMsg }}</v-card-text>
-        </v-card>
+
+ 
+    <v-card v-if="returnMsg !== ''" class="d-flex align-center" height="710">
+      <v-card-text class="text-center">{{ returnMsg }}</v-card-text>
+    </v-card>
+
 
         <v-card v-if="events.length > 0">
           <v-card-text>
@@ -36,7 +38,6 @@
             </v-table>
           </v-card-text>
         </v-card>
-
       </v-col>
     </v-row>
   </v-container>
@@ -116,7 +117,7 @@ function msToTime(duration) {
 onMounted(async () => {
   const cardId = route.params.cardId;
   console.log(cardId);
-  
+
   // Card Type
   const cardData = await getCardType(cardId);
   if (cardData.length == 0) {
@@ -125,7 +126,7 @@ onMounted(async () => {
     });
   }
 
-  if ((cardData.blocked_at != null) && (cardData.blocked_at != "")) {
+  if (cardData.blocked_at != null && cardData.blocked_at != "") {
     returnMsg.value = `Cartão bloqueado !`;
   }
 
