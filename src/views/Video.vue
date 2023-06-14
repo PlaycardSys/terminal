@@ -9,7 +9,6 @@
     ></video>
   </div>
   <v-text-field
-    v-show="showTextField"
     autofocus
     v-model="cardNumber"
     @keydown.enter="checkAndRedirect"
@@ -22,7 +21,7 @@ import { useRouter } from "vue-router";
 
 const cardNumber = ref("");
 const router = useRouter();
-const showTextField = true;
+const showTextField = false;
 
 function checkAndRedirect() {
   if (cardNumber.value.trim() !== "") {
@@ -48,5 +47,9 @@ function checkAndRedirect() {
   height: 100%;
   object-fit: cover;
   position: absolute;
+}
+
+.v-input {
+  opacity: 0;
 }
 </style>
