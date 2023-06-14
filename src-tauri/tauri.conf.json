@@ -49,14 +49,14 @@
     },
     "windows": [
       {
-        "fullscreen": false,
+        "fullscreen": true,
         "resizable": true,
         "title": "Terminal",
         "width": 800,
         "height": 600,
         "center": true,
         "focus": true,
-        "decorations": true,
+        "decorations": false,
         "alwaysOnTop": false
       }
     ]

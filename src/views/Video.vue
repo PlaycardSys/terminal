@@ -21,7 +21,6 @@ import { useRouter } from "vue-router";
 
 const cardNumber = ref("");
 const router = useRouter();
-const showTextField = false;
 
 function checkAndRedirect() {
   if (cardNumber.value.trim() !== "") {
