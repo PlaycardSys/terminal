@@ -7,8 +7,9 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <p v-if="partyMsg != ''">{{ partyMsg }}</p>
-
+        <v-card>
+          <v-card-text v-if="returnMsg !== ''"> {{ returnMsg }} </v-card-text>
+        </v-card>
         <v-table v-if="events.length > 0" fixed-header :height="viewportHeight">
           <thead>
             <tr>
@@ -45,7 +46,7 @@ const route = useRoute();
 
 const events = ref([]);
 const infoList = ref([]);
-const partyMsg = ref("");
+const returnMsg = ref("");
 const viewportHeight = ref(0);
 
 const updateViewportHeight = () => {
@@ -116,8 +117,8 @@ onMounted(async () => {
     });
   }
 
-  if (cardData.blocked_at != '') {
-    partyMsg.value = `Cartão bloqueado !`;
+  if (cardData.blocked_at != "") {
+    returnMsg.value = `Cartão bloqueado !`;
   }
 
   // Playcard
@@ -142,16 +143,16 @@ onMounted(async () => {
 
     if (!partyInfo.is_started) {
       const timeLeft = msToTime(partyInfo.time * 60000);
-      partyMsg.value = `Cartão não utilizado. Você tem ${timeLeft}h para se divertir !`;
+      returnMsg.value = `Cartão não utilizado. Você tem ${timeLeft}h para se divertir !`;
     }
 
     if (partyInfo.is_started && dateEndedAt < dateNow) {
-      partyMsg.value = `Acabou a diversão !`;
+      returnMsg.value = `Acabou a diversão !`;
     }
 
     if (partyInfo.is_started && dateEndedAt >= dateNow) {
       const timeLeft = msToTime(dateEndedAt - dateNow);
-      partyMsg.value = `Você ainda tem ${timeLeft}h para se divertir !`;
+      returnMsg.value = `Você ainda tem ${timeLeft}h para se divertir !`;
     }
   }
 });
