@@ -9,12 +9,7 @@
       <v-col cols="12">
         <p v-if="partyMsg != ''">{{ partyMsg }}</p>
 
-        <v-table
-          v-if="events.length > 0"
-          fixed-header
-          :height="viewportHeight"
-          hide-overflow
-        >
+        <v-table v-if="events.length > 0" fixed-header :height="viewportHeight">
           <thead>
             <tr>
               <th class="text-center">Data/Hora</th>
@@ -161,3 +156,9 @@ setTimeout(() => {
   router.push("/");
 }, 800000);
 </script>
+
+<style>
+.v-table--fixed-height > .v-table__wrapper {
+  overflow: hidden !important;
+}
+</style>
