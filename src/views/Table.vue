@@ -7,12 +7,13 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-
- 
-    <v-card v-if="returnMsg !== ''" class="d-flex align-center" height="710">
-      <v-card-text class="text-center">{{ returnMsg }}</v-card-text>
-    </v-card>
-
+        <v-card
+          v-if="returnMsg !== ''"
+          :height="viewportHeight"
+          class="d-flex align-center justify-center"
+        >
+          <v-card-text class="text-center">{{ returnMsg }}</v-card-text>
+        </v-card>
 
         <v-card v-if="events.length > 0">
           <v-card-text>
@@ -140,6 +141,7 @@ onMounted(async () => {
   //Timecard
   if (cardData.type_card == 2) {
     const partyInfo = await getPartyInfo(cardId);
+    updateViewportHeight();
 
     if (partyInfo.length == 0) {
       await router.push({
