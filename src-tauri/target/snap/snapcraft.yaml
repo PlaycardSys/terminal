@@ -1,0 +1,30 @@
+name: playcardsys-terminal
+base: core18
+version: 0.1.5
+summary: Tauri app.
+description: Awesome Tauri app.
+grade: stable
+confinement: strict
+apps:
+  playcardsys-terminal:
+    command: playcardsys-terminal
+    extensions:
+      - gnome-3-34
+    desktop: playcardsys-terminal.desktop
+parts:
+  dump-binary:
+    plugin: dump
+    source: release
+    source-type: local
+    stage:
+      - lib
+      - icons
+      - playcardsys-terminal
+      - playcardsys-terminal.desktop
+    prime:
+      - lib
+      - icons
+      - playcardsys-terminal
+      - playcardsys-terminal.desktop
+    stage-packages:
+      - libc6

@@ -43,6 +43,7 @@ jobs:
       - name: Snapcore Action Build
         uses: snapcore/action-build@v1
         id: snapcraft
+        path: './src-tauri/target'
       - name: Save Snap Artifact
         uses: actions/upload-artifact@v3
         with:
