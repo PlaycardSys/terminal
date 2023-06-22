@@ -18,12 +18,10 @@ parts:
     source-type: local
     stage:
       - lib
-      - icons
       - playcardsys-terminal
       - playcardsys-terminal.desktop
     prime:
       - lib
-      - icons
       - playcardsys-terminal
       - playcardsys-terminal.desktop
     stage-packages:
