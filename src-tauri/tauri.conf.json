@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "playcardsys-terminal",
-    "version": "0.1.4"
+    "version": "0.1.5"
   },
   "tauri": {
     "allowlist": {
@@ -29,8 +29,7 @@
       ],
       "identifier": "br.com.playcardsys.terminal",
       "targets": [
-        "appimage",
-        "updater"
+        "deb"
       ],
       "category": "Utility",
       "shortDescription": "PlayCardSys Terminal"
@@ -39,9 +38,8 @@
       "csp": null
     },
     "updater": {
-      "active": true,
+      "active": false,
       "endpoints": [
-        "http://localhost:3000/updater",
         "https://gist.githubusercontent.com/DanielScapulatempo/af3319fcadf0b62963e7bfa8865a6a63/raw"
       ],
       "dialog": true,
