@@ -10,7 +10,6 @@ apps:
     command: playcardsys-terminal
     extensions:
       - gnome-3-34
-    desktop: playcardsys-terminal.desktop
 parts:
   dump-binary:
     plugin: dump
@@ -19,10 +18,8 @@ parts:
     stage:
       - lib
       - playcardsys-terminal
-      - playcardsys-terminal.desktop
     prime:
       - lib
       - playcardsys-terminal
-      - playcardsys-terminal.desktop
     stage-packages:
       - libc6
