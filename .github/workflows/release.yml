@@ -14,6 +14,8 @@ jobs:
         platform: [ubuntu-20.04]
 
     runs-on: ${{ matrix.platform }}
+    env:
+      SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - name: setup node
@@ -38,3 +40,18 @@ jobs:
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
+      - name: Snapcore Action Build
+        uses: snapcore/action-build@v1
+        id: snapcraft
+      - name: Save Snap Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: snap
+          path: ${{ steps.snapcraft.outputs.snap }}
+      - name: Snapcraft Action Publish
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
+        with:
+          snap: ${{ steps.snapcraft.outputs.snap }}
+          release: edge
