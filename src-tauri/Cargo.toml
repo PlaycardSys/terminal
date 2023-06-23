@@ -1,6 +1,6 @@
 [package]
 name = "terminal"
-version = "0.1.5"
+version = "0.1.6"
 description = "Terminal de Consulta"
 authors = ["you"]
 license = ""

@@ -1,6 +1,6 @@
 name: playcardsys-terminal
 base: core18
-version: 0.1.5
+version: 0.1.6
 summary: Tauri app.
 description: Awesome Tauri app.
 grade: stable

@@ -3557,7 +3557,7 @@ dependencies = [
 
 [[package]]
 name = "terminal"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "mysql",
  "serde",
