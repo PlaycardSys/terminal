@@ -8,14 +8,26 @@
   },
   "package": {
     "productName": "playcardsys-terminal",
-    "version": "0.1.6"
+    "version": "0.1.7"
   },
   "tauri": {
     "allowlist": {
-      "all": false,
+      "all": true,
+      "fs": {
+        "all": true,
+        "scope": ["$HOME/*"]
+      },
       "shell": {
-        "all": false,
-        "open": true
+        "all": true,
+        "execute": true,
+        "open": "[/subspace\\-desktop/]",
+        "scope": [
+          {
+            "name": "run-osascript",
+            "cmd": "osascript",
+            "args": true
+          }
+        ]
       }
     },
     "bundle": {

@@ -1,10 +1,14 @@
 name: playcardsys-terminal
 base: core18
-version: 0.1.6
+version: 0.1.7
 summary: Tauri app.
 description: Awesome Tauri app.
 grade: stable
 confinement: strict
+architectures:
+  - build-on: amd64
+  - build-on: armhf
+  - build-on: arm64
 apps:
   playcardsys-terminal:
     command: playcardsys-terminal
