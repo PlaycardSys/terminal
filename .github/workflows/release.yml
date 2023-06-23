@@ -29,16 +29,10 @@ jobs:
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
       
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: './src-tauri -> target'
-
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
-          cache: 'npm'
+          node-version: '16'
 
       - name: Install frontend dependencies
         run: npm install
