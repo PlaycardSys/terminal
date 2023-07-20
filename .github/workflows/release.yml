@@ -8,8 +8,7 @@ jobs:
   publish-tauri:
     permissions:
       contents: write
-    runs-on: bullseye
-    name: Build on bullseye armv6
+    runs-on: ubuntu-latest
     env:
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
     steps:
