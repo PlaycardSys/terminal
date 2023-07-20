@@ -8,23 +8,24 @@ jobs:
   publish-tauri:
     permissions:
       contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [ubuntu-22.04]
-
-    runs-on: ${{ matrix.platform }}
+    runs-on: bullseye
+    name: Build on bullseye armv6
     env:
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: Install OS (Ubuntu)
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev patchelf
+      - name: Install OS (Bullseye)
+        uses: uraimo/run-on-arch-action@v2
+        id: runcmd
+        with:
+          arch: armv6
+          distro: bullseye
+          githubToken: ${{ github.token }}
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev patchelf
       
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
