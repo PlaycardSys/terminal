@@ -24,7 +24,7 @@ jobs:
         with:
           base_image: raspios_lite:latest
           cpu: cortex-a7
-          cpu_info: raspberrypi_3b
+          cpu_info: cpuinfo/raspberrypi_3b
           bind_mount_repository: true
           image_additional_mb: 10240
           optimize_image: false
