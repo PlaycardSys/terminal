@@ -30,13 +30,14 @@ jobs:
           optimize_image: false
           shell: bash -l
           commands: |
+            NONINTERACTIVE=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
             # Rust complains (rightly) that $HOME doesn't match eid home
             export HOME=/root
             # Workaround to CI worker being stuck on Updating crates.io index
             export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
             sudo apt-get update -y
-            yes | sudo -E bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
             sudo apt-get install -y file libwebkit2gtk-4.0-dev pkg-config build-essential curl libglib2.0-dev wget libssl-dev libgtk-3-dev libjavascriptcoregtk-4.0-dev librsvg2-dev libgdk3.0-cil libatk1.0-dev patchelf
+            export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/share/pkgconfig
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -50,7 +51,7 @@ jobs:
         run: npm install
       
       - name: Build the app
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@v0.4.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
