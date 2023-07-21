@@ -33,21 +33,48 @@ jobs:
             export HOME=/root
             # Workaround to CI worker being stuck on Updating crates.io index
             export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
-            apt-get update -y --allow-releaseinfo-change
-            apt-get upgrade -y
-            apt-get autoremove -y
-            apt-get install curl
-            curl https://sh.rustup.rs -sSf | sh -s -- -y
-            . "$HOME/.cargo/env"
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash
-            apt-get install -y nodejs
-            apt-get install -y libwebkit2gtk-4.0-dev build-essential wget libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
-            cargo install tauri-cli
-            npm install
-            cargo tauri build
+            sudo apt-get update -y
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh | sh -s -- -y)"
+            sudo apt-get install -y libglvnd file libwebkit2gtk-4.0-dev pkg-config build-essential curl libglib2.0-dev wget libssl-dev libgtk-3-dev libjavascriptcoregtk-4.0-dev librsvg2-dev libgdk3.0-cil libatk1.0-dev patchelf
 
-      - name: Upload deb bundle
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Install frontend dependencies
+        run: npm install
+      
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+          releaseName: 'App v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+
+      - name: Snapcore Action Build
+        uses: snapcore/action-build@v1
+        id: snapcraft
+        with:
+          path: './src-tauri/target'
+
+      - name: Save Snap Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Debian Bundle
-          path: ${{ github.workspace }}/target/release/bundle/deb/terminal_0.1.7_armv6.deb
+          name: snap
+          path: ${{ steps.snapcraft.outputs.snap }}
+
+      - name: Snapcraft Action Publish
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
+        with:
+          snap: ${{ steps.snapcraft.outputs.snap }}
+          release: edge
