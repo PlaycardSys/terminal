@@ -28,13 +28,14 @@ jobs:
           bind_mount_repository: true
           image_additional_mb: 10240
           optimize_image: false
+          shell: /bin/bash -eo pipefail
           commands: |
             # Rust complains (rightly) that $HOME doesn't match eid home
             export HOME=/root
             # Workaround to CI worker being stuck on Updating crates.io index
             export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
             sudo apt-get update -y
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh | sh -s -- -y)"
+            curl https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh -fsSL | sh -s -- -y
             sudo apt-get install -y file libwebkit2gtk-4.0-dev pkg-config build-essential curl libglib2.0-dev wget libssl-dev libgtk-3-dev libjavascriptcoregtk-4.0-dev librsvg2-dev libgdk3.0-cil libatk1.0-dev patchelf
 
       - name: Setup node
