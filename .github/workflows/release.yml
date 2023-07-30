@@ -22,7 +22,7 @@ jobs:
       - name: Install OS (Ubuntu)
         uses: pguyot/arm-runner-action@v2.5.2
         with:
-          base_image: https://cdimage.ubuntu.com/releases/22.04.2/release/ubuntu-22.04.2-preinstalled-server-arm64+raspi.img.xz
+          base_image: https://cdimage.ubuntu.com/releases/20.04/release/ubuntu-20.04.5-preinstalled-server-arm64+raspi.img.xz
           cpu: cortex-a53
           cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
           bind_mount_repository: true
