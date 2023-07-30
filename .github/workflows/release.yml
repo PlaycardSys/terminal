@@ -26,9 +26,9 @@ jobs:
       
       - name: Install OS (Ubuntu)
         if: matrix.platform == 'ubuntu-22.04'
-        uses: pguyot/arm-runner-action@v2.5.2
+        uses: pguyot/arm-runner-action@v2
         with:
-          base_image: raspi_3_bullseye:20230102
+          base_image: dietpi:rpi_armv8_bullseye
           cpu: cortex-a53
           cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
           bind_mount_repository: true
