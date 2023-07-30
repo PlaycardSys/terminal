@@ -30,7 +30,6 @@ jobs:
         with:
           base_image: raspi_4_bullseye:20230102
           cpu: cortex-a53
-          cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
           bind_mount_repository: true
           image_additional_mb: 10240
           optimize_image: false
