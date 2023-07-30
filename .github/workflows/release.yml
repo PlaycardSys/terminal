@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: write
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     env:
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
@@ -57,7 +57,7 @@ jobs:
         run: npm install
       
       - name: Build the app
-        uses: tauri-apps/tauri-action@v0.4.2
+        uses: tauri-apps/tauri-action@v0.4.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
