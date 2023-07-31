@@ -19,7 +19,7 @@ jobs:
             runner: ubuntu-latest
 
     name: ${{ matrix.name }}
-    runs-on: ${{ matrix.target }}
+    runs-on: ${{ matrix.runner }}
 
     env:
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
