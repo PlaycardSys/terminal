@@ -33,7 +33,7 @@ jobs:
         if: ${{ matrix.runner == 'ubuntu-latest' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev patchelf
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev patchelf libssl-dev
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh  | sh -s -- -y)"
           export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/aarch64-linux-gnu/pkgconfig
           export PKG_CONFIG_SYSROOT_DIR=/
@@ -67,6 +67,7 @@ jobs:
           PKG_CONFIG_PATH: /usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/aarch64-linux-gnu/pkgconfig
           PKG_CONFIG_SYSROOT_DIR: /
           PKG_CONFIG_ALLOW_CROSS: 1
+          OPENSSL_DIR: /usr/include/openssl
         with:
           args: --target ${{ matrix.target }}
           tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
