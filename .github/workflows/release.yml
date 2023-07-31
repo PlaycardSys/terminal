@@ -2,7 +2,7 @@ name: 'publish'
 on:
   push:
     branches:
-      - release
+      - main
 
 jobs:
   publish-tauri:
@@ -15,8 +15,8 @@ jobs:
       matrix:
         include:
           - name: Ubuntu-armv8
-            target: ubuntu-latest
-            runner: aarch64-unknown-linux-gnu
+            target: aarch64-unknown-linux-gnu
+            runner: ubuntu-latest
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.target }}
