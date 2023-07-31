@@ -40,9 +40,7 @@
         "icons/icon.ico"
       ],
       "identifier": "br.com.playcardsys.terminal",
-      "targets": [
-        "deb"
-      ],
+      "targets": "all",
       "category": "Utility",
       "shortDescription": "PlayCardSys Terminal"
     },
@@ -50,12 +48,7 @@
       "csp": null
     },
     "updater": {
-      "active": false,
-      "endpoints": [
-        "https://gist.githubusercontent.com/DanielScapulatempo/af3319fcadf0b62963e7bfa8865a6a63/raw"
-      ],
-      "dialog": true,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc3MEU2MERDMTE3RENERDAKUldUUXpYMFIzR0FPZDNYMWk3cW1ibWxRYTlwUCtKbFQrL0dySmpGWGg3ZStLekRYWGpuYk1GVzcK"
+      "active": false
     },
     "windows": [
       {

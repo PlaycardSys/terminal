@@ -2,7 +2,7 @@ name: 'publish'
 on:
   push:
     branches:
-      - main
+      - release
 
 jobs:
   publish-tauri:
@@ -10,42 +10,53 @@ jobs:
     permissions:
       contents: write
 
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Ubuntu-armv8
+            target: ubuntu-latest
+            runner: aarch64-unknown-linux-gnu
+
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.target }}
 
     env:
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: Install OS (Ubuntu)
-        uses: pguyot/arm-runner-action@v2.5.2
+      - name: Update and Install Dependencies (Linux)
+        if: ${{ matrix.runner == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev patchelf
+      
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Add Rust Target
+        run: rustup target add ${{ matrix.target }}
+      
+      - name: Sync node version and setup cache
+        uses: actions/setup-node@v3
         with:
-          base_image: https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bullseye.7z
-          cpu: cortex-a53
-          bind_mount_repository: true
-          image_additional_mb: 10240
-          optimize_image: false
-          commands: |
-            # Rust complains (rightly) that $HOME doesn't match eid home
-            export HOME=/root
-            # Workaround to CI worker being stuck on Updating crates.io index
-            export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
-            apt-get update -y --allow-releaseinfo-change
-            apt-get upgrade -y
-            apt-get autoremove -y
-            apt-get install curl
-            curl https://sh.rustup.rs -sSf | sh -s -- -y
-            . "$HOME/.cargo/env"
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash
-            apt-get install -y nodejs
-            apt-get install -y libwebkit2gtk-4.0-dev build-essential wget libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
-            rm package-lock.json
-            npm install
-            npm run tauri build
-      - name: Upload deb bundle
-        uses: actions/upload-artifact@v3
+          node-version: '16'
+
+      - name: Install frontend dependencies
+        run: npm install
+      
+      - name: Build the app
+        uses: tauri-apps/tauri-action@dev
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: Debian Bundle
-          path: ${{ github.workspace }}/target/release/bundle/deb/raspirus_1.0.0_arm64.deb
+          args: --target ${{ matrix.target }}
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+          releaseName: 'App v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
