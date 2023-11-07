@@ -1,76 +1,65 @@
-name: 'publish'
+name: Release
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      dry-run:
+        description: 'Compiles the app but not upload artifacts to distribution server'
+        default: false
+        required: false
+        type: boolean
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+
+defaults:
+  run:
+    shell: 'bash'
+
 
 jobs:
-  publish-tauri:
+  draft_release:
 
     permissions:
-      contents: write
+      contents: write # Allows this job to create releases
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        include:
-          - name: Ubuntu-armv8
-            target: aarch64-unknown-linux-gnu
-            runner: ubuntu-latest
+        os: [ ubuntu-latest, windows-latest ]
 
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.runner }}
-
-    env:
-      SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
+    runs-on: ${{ matrix.os }}
 
     steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      
-      - name: Update and Install Dependencies (Linux)
-        if: ${{ matrix.runner == 'ubuntu-latest' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev patchelf libssl-dev
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh  | sh -s -- -y)"
-          export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/aarch64-linux-gnu/pkgconfig
-          export PKG_CONFIG_SYSROOT_DIR=/
-          export PKG_CONFIG_ALLOW_CROSS=1
-          echo "PKG_CONFIG: $PKG_CONFIG"
-          echo "PKG_CONFIG_ALLOW_CROSS: $PKG_CONFIG_ALLOW_CROSS"
-          echo "PKG_CONFIG_SYSROOT_DIR: $PKG_CONFIG_SYSROOT_DIR"
-        env:
-          PKG_CONFIG_PATH: /usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/aarch64-linux-gnu/pkgconfig
-          PKG_CONFIG_SYSROOT_DIR: /
-          PKG_CONFIG_ALLOW_CROSS: 1
-
-      - name: Rust setup
-        uses: dtolnay/rust-toolchain@stable
-      
-      - name: Add Rust Target
-        run: rustup target add ${{ matrix.target }}
-      
-      - name: Sync node version and setup cache
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          cache: 'npm'
 
-      - name: Install frontend dependencies
-        run: npm install
-      
-      - name: Build the app
-        uses: tauri-apps/tauri-action@dev
+      - run: npm ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PKG_CONFIG_PATH: /usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/aarch64-linux-gnu/pkgconfig
-          PKG_CONFIG_SYSROOT_DIR: /
-          PKG_CONFIG_ALLOW_CROSS: 1
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
+      - run: npm run build
+
+      - name: Compile artifacts ${{ inputs.dry-run && '' || 'and upload them to github release' }}
+        # I use this action because it is capable of retrying multiple times if there are any issues with the distribution server
+        uses: nick-fields/retry@v2
         with:
-          args: --target ${{ matrix.target }}
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: 'App v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
-          prerelease: false
+          timeout_minutes: 15
+          max_attempts: 6
+          retry_wait_seconds: 15
+          retry_on: error
+          shell: 'bash'
+          # Due to this issue https://github.com/electron-userland/electron-builder/issues/6411 the build with npx when rebuilding native dependencies hangs forever
+          # see https://github.com/cawa-93/vite-electron-builder/pull/953
+          command: ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish ${{ inputs.dry-run && 'never' || 'always' }}
+        env:
+          # Code Signing params
+          # See https://www.electron.build/code-signing
+          # CSC_LINK: ''
+          # CSC_KEY_PASSWORD: ''
+          # Publishing artifacts
+          GH_TOKEN: ${{ secrets.github_token }} # GitHub token, automatically provided (No need to define this secret in the repo settings)
