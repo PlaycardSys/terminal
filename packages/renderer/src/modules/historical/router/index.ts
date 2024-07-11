@@ -17,7 +17,7 @@ const HistoricalRoutes = [
       },
       {
         path: ':cardId',
-        name: 'historicalTableView',
+        name: 'historical',
         component: () =>
           import(
             /* webpackChunkName: "historicalTableView" */ '/@/modules/historical/views/TableView.vue'
