@@ -12,11 +12,9 @@ concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: true
 
-
 defaults:
   run:
     shell: 'bash'
-
 
 jobs:
   draft_release:
@@ -29,10 +27,10 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+      - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
@@ -55,7 +53,7 @@ jobs:
           shell: 'bash'
           # Due to this issue https://github.com/electron-userland/electron-builder/issues/6411 the build with npx when rebuilding native dependencies hangs forever
           # see https://github.com/cawa-93/vite-electron-builder/pull/953
-          command: ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish ${{ inputs.dry-run && 'never' || 'always' }}
+          command: ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish ${{ inputs.dry-run && 'never' || 'always' }} --arm64
         env:
           # Code Signing params
           # See https://www.electron.build/code-signing
