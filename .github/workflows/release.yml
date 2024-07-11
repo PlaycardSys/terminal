@@ -1,48 +1,45 @@
 name: Release
 on:
-  workflow_call:
-    inputs:
-      dry-run:
-        description: 'Compiles the app but not upload artifacts to distribution server'
-        default: false
-        required: false
-        type: boolean
+  push:
+    branches: ['main']
 
-concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: true
+env:
+  NODE_VERSION: '20.x'                # set this to the node version to use
+  ARTIFACT_NAME: 'terminal-deploy'
+  RELEASE_NAME: 'Release Terminal'
 
 defaults:
   run:
     shell: 'bash'
 
+permissions: write-all
+
 jobs:
-  draft_release:
-
-    permissions:
-      contents: write # Allows this job to create releases
-
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ ubuntu-latest, windows-latest ]
-
+  create-and-publish-release:
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - run: npm run build
+      - name: Build application
+        run: npm run build
+      
+      - name: Get package version
+        id: version
+        run: echo "version=$(node -p -e 'require("./package.json").version')" >> $GITHUB_OUTPUT
 
-      - name: Compile artifacts ${{ inputs.dry-run && '' || 'and upload them to github release' }}
+      - name: Compile artifacts and upload them to github release
         # I use this action because it is capable of retrying multiple times if there are any issues with the distribution server
         uses: nick-fields/retry@v2
         with:
@@ -53,7 +50,7 @@ jobs:
           shell: 'bash'
           # Due to this issue https://github.com/electron-userland/electron-builder/issues/6411 the build with npx when rebuilding native dependencies hangs forever
           # see https://github.com/cawa-93/vite-electron-builder/pull/953
-          command: ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish ${{ inputs.dry-run && 'never' || 'always' }} --arm64
+          command: ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish always --arm64
         env:
           # Code Signing params
           # See https://www.electron.build/code-signing
