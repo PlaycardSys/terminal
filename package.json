@@ -6,7 +6,7 @@
   "name": "terminal",
   "productName": "terminal",
   "description": "Terminal Kiosk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "author": {
     "email": "daniel.scapulatempo@playcenter.com.br",
