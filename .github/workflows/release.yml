@@ -38,6 +38,13 @@ jobs:
       - name: Get package version
         id: version
         run: echo "version=$(node -p -e 'require("./package.json").version')" >> $GITHUB_OUTPUT
+      
+      - name: Install ruby
+        id: ruby
+        run: |
+          sudo apt-get install ruby ruby-dev
+          sudo gem install fpm
+          
 
       - name: Compile artifacts and upload them to github release
         # I use this action because it is capable of retrying multiple times if there are any issues with the distribution server
@@ -50,7 +57,7 @@ jobs:
           shell: 'bash'
           # Due to this issue https://github.com/electron-userland/electron-builder/issues/6411 the build with npx when rebuilding native dependencies hangs forever
           # see https://github.com/cawa-93/vite-electron-builder/pull/953
-          command: ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish always --arm64
+          command: USE_SYSTEM_FPM=true ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish always --arm64
         env:
           # Code Signing params
           # See https://www.electron.build/code-signing
