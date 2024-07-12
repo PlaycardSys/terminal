@@ -10,7 +10,7 @@ const router = useRouter();
 function checkAndRedirect() {
   if (cardNumber.value.trim() !== '') {
     router.push({
-      name: 'historicalTableView',
+      name: 'historical',
       params: {
         cardId: formatCardNumber(cardNumber.value),
       },

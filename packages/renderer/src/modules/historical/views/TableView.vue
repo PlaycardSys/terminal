@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
 import {useRouter, useRoute} from 'vue-router';
-import {msToTime} from '/@/helpers/formatter';
+import {msToTime, currencyEncode} from '/@/helpers/formatter';
 import TableCardInfo from '../components/TableCardInfo.vue';
 import {getEvents, getPartyInfo, getType} from '../repositories/historical.repository';
 import IdleDetector from '/@/helpers/idle';
@@ -20,10 +20,10 @@ const getCardType = async (card_id: string) => {
 
   if (card.length > 0) {
     infoList.value.push(
-      {name: 'Crédito', amount: card[0].credits},
-      {name: 'Bônus', amount: card[0].bonus},
-      {name: 'CredPromo', amount: card[0].credpromo},
-      {name: 'Tickets', amount: card[0].tickets},
+      {name: 'Crédito', amount: currencyEncode(card[0].credits), icon: 'mdi-cash'},
+      {name: 'Bônus', amount: currencyEncode(card[0].bonus), icon: 'mdi-cash-multiple'},
+      {name: 'CredPromo', amount: currencyEncode(card[0].credpromo), icon: 'mdi-cash-multiple'},
+      {name: 'Tickets', amount: card[0].tickets, icon: 'mdi-ticket'},
     );
 
     return card[0];
@@ -51,13 +51,13 @@ const submitDataBlockedCard = async (cardData: {[key: string]: string}) => {
 };
 
 const submitDataPlaycard = async (cardData: {[key: string]: string | number}, card_id: string) => {
-  if (cardData.type == 1) {
+  if (cardData.clase == 1) {
     dataSet.value = await getEvents(card_id);
   }
 };
 
 const submitDataTimecard = async (cardData: {[key: string]: string | number}, card_id: string) => {
-  if (cardData.type == 2) {
+  if (cardData.clase == 2) {
     const partyInfo = await getPartyInfo(card_id);
 
     if (partyInfo.length == 0) {
@@ -152,7 +152,7 @@ onMounted(async () => {
     <v-row v-if="dataSet.length > 0">
       <v-col>
         <v-card>
-          <v-card-text>
+          <v-card-text class="bg-brown-lighten-5">
             <v-table
               fixed-header
               density="compact"
@@ -160,7 +160,6 @@ onMounted(async () => {
               <thead>
                 <tr>
                   <th id="headerDateTime"> Data/Hora </th>
-                  <th id="headerPlaycard"> Playcard </th>
                   <th id="headerCashier"> Caixa </th>
                   <th id="headerEvent"> Evento </th>
                   <th id="headerAmount"> Valor </th>
@@ -172,10 +171,9 @@ onMounted(async () => {
                   :key="event.created_at"
                 >
                   <td>{{ event.created_at }}</td>
-                  <td>{{ event.card_id }}</td>
                   <td>{{ event.class }}</td>
                   <td>{{ event.event }}</td>
-                  <td>{{ event.amount }}</td>
+                  <td>{{ currencyEncode(event.amount) }}</td>
                 </tr>
               </tbody>
             </v-table>
@@ -189,6 +187,13 @@ onMounted(async () => {
 .v-table__wrapper {
   overflow: hidden !important;
   height: 83vh;
+}
+.v-table.v-table--fixed-header > .v-table__wrapper > table > thead > tr > th {
+  font-weight: bold;
+  color: #3E2723;
+}
+.v-table.v-table--fixed-header > .v-table__wrapper > table > tbody > tr > td {
+  color: #795548;
 }
 
 p {
