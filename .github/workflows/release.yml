@@ -26,42 +26,37 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Remove lock files
+        run: |
+          sudo rm package-lock.json
+          sudo rm yarn.lock
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - name: Build application
-        run: npm run build
-      
       - name: Get package version
         id: version
         run: echo "version=$(node -p -e 'require("./package.json").version')" >> $GITHUB_OUTPUT
       
       - name: Install ruby
-        id: ruby
         run: |
           sudo apt-get install ruby ruby-dev
           sudo gem install fpm
-          
-
-      - name: Compile artifacts and upload them to github release
-        # I use this action because it is capable of retrying multiple times if there are any issues with the distribution server
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 15
-          max_attempts: 6
-          retry_wait_seconds: 15
-          retry_on: error
-          shell: 'bash'
-          # Due to this issue https://github.com/electron-userland/electron-builder/issues/6411 the build with npx when rebuilding native dependencies hangs forever
-          # see https://github.com/cawa-93/vite-electron-builder/pull/953
-          command: USE_SYSTEM_FPM=true ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish always --arm64
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install fakeroot dpkg
+      
+      - name: Build application
         env:
-          # Code Signing params
-          # See https://www.electron.build/code-signing
-          # CSC_LINK: ''
-          # CSC_KEY_PASSWORD: ''
-          # Publishing artifacts
-          GH_TOKEN: ${{ secrets.github_token }} # GitHub token, automatically provided (No need to define this secret in the repo settings)
+          VITE_API_URL: "http://10.200.0.11:3011"
+        run: npm run make-raspberry
+
+      - name: Publish app
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        run: npm run publish
