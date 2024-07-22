@@ -18,18 +18,35 @@ const config: ForgeConfig = {
     extraResource: [
       './public/videos',
       './public/icons'
-    ]
+    ],
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({
-    setupIcon: './public/icons/icon.ico',
-  }), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({
-    options: {
-      name: 'terminal-de-consulta',
-      productName: 'Terminal De Consulta',
-      icon: './public/icons/icon.png',
+  makers: [
+    // new MakerSquirrel({
+    //   setupIcon: './public/icons/icon.ico',
+    // }), 
+    // new MakerZIP({}, ['darwin']), 
+    // new MakerRpm({}), 
+    // new MakerDeb({
+    //   options: {
+    //     name: 'terminal-de-consulta',
+    //     productName: 'Terminal De Consulta',
+    //     icon: './public/icons/icon.png',
+    //   }
+    // }, ['linux'])
+    {
+      name: '@electron-forge/maker-deb',
+      config: {
+        arch: 'arm64',
+        platform: 'linux',
+        options: {
+          name: 'terminal-de-consulta',
+          productName: 'Terminal De Consulta',
+          icon: './public/icons/icon.png',
+        }
+      }
     }
-  })],
+  ],
   plugins: [
     new VitePlugin({
       // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.
@@ -70,7 +87,7 @@ const config: ForgeConfig = {
       config: {
         repository: {
           owner: 'PlaycardSys',
-          name: 'terminal'
+          name: 'terminal',
         },
         draft: false,
         force: false,
