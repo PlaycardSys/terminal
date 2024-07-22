@@ -46,12 +46,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install fakeroot dpkg
       
-      - name: Build application
-        env:
-          VITE_API_URL: "http://10.200.0.11:3011"
-        run: npm run make-raspberry
-
       - name: Publish app
         env:
+          VITE_API_URL: "http://10.200.0.11:3011"
           GITHUB_TOKEN: ${{ secrets.github_token }}
         run: npm run publish
