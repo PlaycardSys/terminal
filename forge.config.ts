@@ -64,6 +64,21 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'PlaycardSys',
+          name: 'terminal'
+        },
+        draft: false,
+        force: false,
+        prerelease: false,
+        generateReleaseNotes: true
+      }
+    }
+  ],
 };
 
 export default config;
