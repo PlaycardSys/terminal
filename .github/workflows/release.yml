@@ -29,8 +29,8 @@ jobs:
       
       - name: Remove lock files
         run: |
-          sudo rm package-lock.json
-          sudo rm yarn.lock
+          sudo rm package-lock.json -f
+          sudo rm yarn.lock -f
 
       - name: Install dependencies
         run: npm install
