@@ -15,6 +15,8 @@ const createWindow = () => {
     frame: (process.env.NODE_ENV) ? true : false,
     icon: path.join(process.resourcesPath, 'public/icons/256x256.png'),
     webPreferences: {
+      webSecurity: false,
+      allowRunningInsecureContent: false,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
@@ -31,6 +33,8 @@ const createWindow = () => {
     mainWindow.webContents.openDevTools();
   }
 };
+
+app.disableHardwareAcceleration();
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
