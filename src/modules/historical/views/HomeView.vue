@@ -6,7 +6,7 @@ import {formatCardNumber} from '../../../helpers/formatter';
 const cardNumber = ref(null);
 const dataCardFormInput = ref(null);
 const router = useRouter();
-const videoSrc = ref('');
+const imgSrc = ref('');
 
 function checkAndRedirect() {
   if (cardNumber.value.trim() !== '') {
@@ -21,7 +21,7 @@ function checkAndRedirect() {
 onMounted(() => {
   const isDev = process.env.NODE_ENV === 'development';
 
-  videoSrc.value = isDev ? '/videos/video-terminal.mp4' : `../../../../videos/video-terminal.mp4`;
+  imgSrc.value = isDev ? '/images/display_idle_1.png' : `../../../../images/display_idle_1.png`;
   dataCardFormInput.value.focus();
 });
 </script>
@@ -32,20 +32,7 @@ onMounted(() => {
   >
     <v-row no-gutters>
       <v-col class="d-flex justify-center">
-        <video 
-          no-controls 
-          autoplay 
-          muted 
-          loop 
-          class="videoPlayer"
-          description="VideoPlayer"
-          aria-labelledby="VideoPlayer"
-        >
-          <source 
-            :src="videoSrc"
-            type="video/mp4"
-          >
-        </video>
+        <img :src="imgSrc" alt="idle" />
         <v-text-field
           ref="dataCardFormInput"
           v-model="cardNumber"
@@ -61,7 +48,7 @@ onMounted(() => {
   &.wrapper {
     padding: 0;
     height: 100vh;
-    .videoPlayer {
+    img {
       height: 100vh;
       width: auto;
       display: block;
