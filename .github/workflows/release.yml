@@ -9,6 +9,8 @@ env:
   NODE_VERSION: '20.x'                # set this to the node version to use
   ARTIFACT_NAME: 'terminal-deploy'
   RELEASE_NAME: 'Release Terminal'
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 
 defaults:
   run:
@@ -49,7 +51,7 @@ jobs:
         run: npm run make -- --targets=@electron-forge/maker-deb
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: terminal-de-consulta-x64
           path: out/make
@@ -87,7 +89,7 @@ jobs:
           
           
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: terminal-de-consulta-arm64
           path: out/make
