@@ -20,7 +20,7 @@ function checkAndRedirect() {
 }
 onMounted(() => {
   const isDev = process.env.NODE_ENV === 'development';
-
+  
   imgSrc.value = isDev ? '/images/display_idle_1.png' : `../../../../images/display_idle_1.png`;
   dataCardFormInput.value.focus();
 });
