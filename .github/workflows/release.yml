@@ -91,10 +91,23 @@ jobs:
         with:
           name: terminal-de-consulta-arm64
           path: out/make
+  
+  create-tag:
+    runs-on: ubuntu-latest
+    needs: [build-x64, build-arm64]
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Get package version
+        id: version
+        run: echo "version=$(node -p -e 'require("./package.json").version')" >> $GITHUB_OUTPUT
       
   publish:
     runs-on: ubuntu-latest
-    needs: [build-x64, build-arm64]
+    needs: [create-tag]
     steps:
       - name: Download x64 artifact
         uses: actions/download-artifact@v2
@@ -111,6 +124,7 @@ jobs:
       - name: Publish to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v${{ needs.create-tag.outputs.version }}
           files: |
             out/make/x64/**
             out/make/arm64/**
