@@ -20,18 +20,23 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    new MakerDeb({
-      options: {
-        name: 'terminal-de-consulta',
-        productName: 'Terminal De Consulta',
-        icon: './public/icons/icon.png',
+    {
+      name: '@electron-forge/maker-deb',
+      config: {
+        arch: 'x64',
+        platforms: ['linux'],
+        options: {
+          name: 'terminal-de-consulta',
+          productName: 'Terminal De Consulta',
+          icon: './public/icons/icon.png',
+        }
       }
-    }, ['linux']),
+    },
     {
       name: '@electron-forge/maker-deb',
       config: {
         arch: 'arm64',
-        platform: 'linux',
+        platforms: ['linux'],
         options: {
           name: 'terminal-de-consulta',
           productName: 'Terminal De Consulta',

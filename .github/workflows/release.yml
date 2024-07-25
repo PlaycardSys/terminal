@@ -1,7 +1,9 @@
-name: Release
+name: Build and Publish
+
 on:
   push:
-    branches: ['main']
+    branches:
+      - main
 
 env:
   NODE_VERSION: '20.x'                # set this to the node version to use
@@ -15,9 +17,45 @@ defaults:
 permissions: write-all
 
 jobs:
-  create-and-publish-release:
-    runs-on: self-hosted
+  build-x64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Remove lock files
+        run: |
+          sudo rm package-lock.json -f
+          sudo rm yarn.lock -f
+
+      - name: Install dependencies
+        run: npm install
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+    
+      - name: Install fakeroot and dpkg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fakeroot dpkg
+        
+      - name: Build for x64
+        env:
+          VITE_API_URL: "http://10.205.0.2:3011"
+        run: npm run make -- --targets=@electron-forge/maker-deb
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: terminal-de-consulta-x64
+          path: out/make
+
+  build-arm64:
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,13 +75,44 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - name: Install dependencies
+      - name: Install fakeroot and dpkg
         run: |
           sudo apt-get update
           sudo apt-get install fakeroot dpkg
       
-      - name: Publish app
+      - name: Build for arm64
         env:
           VITE_API_URL: "http://10.205.0.2:3011"
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        run: npm run publish
+        run: npm run make -- --targets=@electron-forge/maker-deb --arch=arm64
+          
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: terminal-de-consulta-arm64
+          path: out/make
+      
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build-x64, build-arm64]
+    steps:
+      - name: Download x64 artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: terminal-de-consulta-x64
+          path: out/make/x64
+
+      - name: Download arm64 artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: terminal-de-consulta-arm64
+          path: out/make/arm64
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            out/make/x64/**
+            out/make/arm64/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
