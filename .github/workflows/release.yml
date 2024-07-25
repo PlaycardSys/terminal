@@ -37,10 +37,6 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - name: Get package version
-        id: version
-        run: echo "version=$(node -p -e 'require("./package.json").version')" >> $GITHUB_OUTPUT
-      
       - name: Install dependencies
         run: |
           sudo apt-get update

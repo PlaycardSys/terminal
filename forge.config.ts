@@ -1,8 +1,5 @@
 import type { ForgeConfig } from '@electron-forge/shared-types';
-//import { MakerSquirrel } from '@electron-forge/maker-squirrel';
-//import { MakerZIP } from '@electron-forge/maker-zip';
-//import { MakerDeb } from '@electron-forge/maker-deb';
-//import { MakerRpm } from '@electron-forge/maker-rpm';
+import { MakerDeb } from '@electron-forge/maker-deb';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
@@ -23,18 +20,13 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    // new MakerSquirrel({
-    //   setupIcon: './public/icons/icon.ico',
-    // }), 
-    // new MakerZIP({}, ['darwin']), 
-    // new MakerRpm({}), 
-    // new MakerDeb({
-    //   options: {
-    //     name: 'terminal-de-consulta',
-    //     productName: 'Terminal De Consulta',
-    //     icon: './public/icons/icon.png',
-    //   }
-    // }, ['linux'])
+    new MakerDeb({
+      options: {
+        name: 'terminal-de-consulta',
+        productName: 'Terminal De Consulta',
+        icon: './public/icons/icon.png',
+      }
+    }, ['linux']),
     {
       name: '@electron-forge/maker-deb',
       config: {
