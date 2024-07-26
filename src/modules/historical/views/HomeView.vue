@@ -2,11 +2,14 @@
 import {onMounted, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {formatCardNumber} from '../../../helpers/formatter';
+import config from '../../../../public/json/config.json'
+
 
 const cardNumber = ref(null);
 const dataCardFormInput = ref(null);
 const router = useRouter();
 const imgSrc = ref('');
+const videoSrc = ref('');
 
 function checkAndRedirect() {
   if (cardNumber.value.trim() !== '') {
@@ -21,7 +24,14 @@ function checkAndRedirect() {
 onMounted(() => {
   const isDev = process.env.NODE_ENV === 'development';
   
-  imgSrc.value = isDev ? '/images/display_idle_1.png' : `../../../../images/display_idle_1.png`;
+  // let jsonFile =  isDev ? '/json/config.json' : '../../../../json/config.json';
+  // jsonFile = JSON.parse(JSON.stringify(config));
+  if (config.IS_MOVIE) {
+    videoSrc.value = isDev ? '/videos/video.mp4' : `../../../../videos/videos.mp4`;
+  } else {
+    imgSrc.value = isDev ? '/images/image.png' : `../../../../images/image.png`;
+  }
+
   dataCardFormInput.value.focus();
 });
 </script>
@@ -32,7 +42,8 @@ onMounted(() => {
   >
     <v-row no-gutters>
       <v-col class="d-flex justify-center">
-        <img :src="imgSrc" alt="idle" />
+        <img v-if="imgSrc" :src="imgSrc" alt="idle" />
+        <video v-if="videoSrc" :src="videoSrc"></video>
         <v-text-field
           ref="dataCardFormInput"
           v-model="cardNumber"

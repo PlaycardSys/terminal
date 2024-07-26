@@ -1,4 +1,5 @@
 import {useSnackbarStore} from '../stores/components/snackbar.store';
+import config from '../../public/json/config.json'
 
 export const fetchWrapper = {
   get: request('GET'),
@@ -9,7 +10,7 @@ export const fetchWrapper = {
 
 function request(method: string) {
   return async (url: string, body?: Record<string, unknown>) => {
-    const baseUrl = import.meta.env.VITE_API_URL;
+    const baseUrl = config.API_URL;
     url = `${baseUrl}${url}`;
 
     const requestOptions: RequestInit = {
