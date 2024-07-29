@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, computed} from 'vue';
 import {useRouter} from 'vue-router';
-import {formatCardNumber} from '../../../helpers/formatter';
-import config from '../../../../public/json/config.json'
-
+import {formatCardNumber, convertDecimalBase10ToHexadecimal} from '../../../helpers/formatter';
 
 const cardNumber = ref(null);
 const dataCardFormInput = ref(null);
@@ -11,25 +9,35 @@ const router = useRouter();
 const imgSrc = ref('');
 const videoSrc = ref('');
 
-function checkAndRedirect() {
+const transformedCardNumber = computed(async () => {
+  const config = await window.config.loadConfig();
+
+  if (config.TYPE_READER == 'dec/10') {
+    return convertDecimalBase10ToHexadecimal(parseInt(cardNumber.value));
+  }
+
+  return cardNumber.value ? formatCardNumber(cardNumber.value) : '';
+});
+
+async function checkAndRedirect() {
   if (cardNumber.value.trim() !== '') {
+    const transformedValue = await transformedCardNumber.value;
     router.push({
       name: 'historical',
       params: {
-        cardId: `>${formatCardNumber(cardNumber.value)}`,
+        cardId: `>${transformedValue}`,
       },
     });
   }
 }
-onMounted(() => {
-  const isDev = process.env.NODE_ENV === 'development';
+onMounted(async () => {
   
-  // let jsonFile =  isDev ? '/json/config.json' : '../../../../json/config.json';
-  // jsonFile = JSON.parse(JSON.stringify(config));
+  const config = await window.config.loadConfig();
+
   if (config.IS_MOVIE) {
-    videoSrc.value = isDev ? '/videos/video.mp4' : `../../../../videos/videos.mp4`;
+    videoSrc.value = await window.electron.getResourcePath('videos/video.mp4')
   } else {
-    imgSrc.value = isDev ? '/images/image.png' : `../../../../images/image.png`;
+    imgSrc.value = await window.electron.getResourcePath('images/image.png');
   }
 
   dataCardFormInput.value.focus();
@@ -43,7 +51,23 @@ onMounted(() => {
     <v-row no-gutters>
       <v-col class="d-flex justify-center">
         <img v-if="imgSrc" :src="imgSrc" alt="idle" />
-        <video v-if="videoSrc" :src="videoSrc"></video>
+
+        <video 
+          v-if="videoSrc"
+          no-controls 
+          autoplay 
+          muted 
+          loop 
+          class="videoPlayer"
+          description="VideoPlayer"
+          aria-labelledby="VideoPlayer"
+        >
+          <source 
+            :src="videoSrc"
+            type="video/mp4"
+          >
+        </video>
+
         <v-text-field
           ref="dataCardFormInput"
           v-model="cardNumber"
