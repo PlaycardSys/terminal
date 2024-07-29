@@ -15,7 +15,8 @@ const config: ForgeConfig = {
     extraResource: [
       './public/videos',
       './public/icons',
-      './public/images'
+      './public/images',
+      './public/json',
     ],
   },
   rebuildConfig: {},

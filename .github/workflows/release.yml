@@ -10,7 +10,6 @@ env:
   ARTIFACT_NAME: 'terminal-deploy'
   RELEASE_NAME: 'Release Terminal'
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 
 defaults:
   run:
@@ -46,12 +45,10 @@ jobs:
           sudo apt-get install -y fakeroot dpkg
         
       - name: Build for x64
-        env:
-          VITE_API_URL: "http://10.205.0.2:3011"
         run: npm run make -- --targets=@electron-forge/maker-deb
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: terminal-de-consulta-x64
           path: out/make
@@ -83,13 +80,10 @@ jobs:
           sudo apt-get install fakeroot dpkg
       
       - name: Build for arm64
-        env:
-          VITE_API_URL: "http://10.205.0.2:3011"
         run: npm run make -- --targets=@electron-forge/maker-deb --arch=arm64
           
-          
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: terminal-de-consulta-arm64
           path: out/make

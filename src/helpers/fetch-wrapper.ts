@@ -9,7 +9,11 @@ export const fetchWrapper = {
 
 function request(method: string) {
   return async (url: string, body?: Record<string, unknown>) => {
-    const baseUrl = import.meta.env.VITE_API_URL;
+
+    const config = await window.config.loadConfig();
+    const snackbarStore = useSnackbarStore();
+
+    const baseUrl = config.API_URL;
     url = `${baseUrl}${url}`;
 
     const requestOptions: RequestInit = {
@@ -20,13 +24,17 @@ function request(method: string) {
       body: body ? JSON.stringify(body) : undefined,
     };
 
-    const response = await fetch(url, requestOptions);
-
-    if (response?.ok) {
-      return await handleResponse(response);
-    } else {
-      const snackbarStore = useSnackbarStore();
-      snackbarStore.error(`Desculpe, ocorreu um erro !\nTente novamente (cod ${response?.status})`);
+    try {
+      const response = await fetch(url, requestOptions);
+  
+      if (response?.ok) {
+        return await handleResponse(response);
+      } else {
+        snackbarStore.error(`Desculpe, ocorreu um erro !\nTente novamente (cod ${response?.status})`);
+        return [];
+      }
+    } catch (error) {
+      snackbarStore.error(`Desculpe, ocorreu um erro !\nTente novamente (cod ${error?.name})`);
       return [];
     }
   };

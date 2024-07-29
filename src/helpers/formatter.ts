@@ -121,3 +121,10 @@ export const resolveStatusPromotionVariant = (status: string) => {
 
   return return_status;
 };
+
+export const convertDecimalBase10ToHexadecimal = (decimal: number) => {
+
+  const decimalNumber = decimal * 374457.92447668145;
+
+  return decimalNumber.toString(16).toUpperCase();
+}
