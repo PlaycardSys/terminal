@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref, computed} from 'vue';
 import {useRouter} from 'vue-router';
-import {formatCardNumber, convertDecimalBase10ToHexadecimal} from '../../../helpers/formatter';
+import {formatCardNumber, convert8h10dTo10h} from '../../../helpers/formatter';
 
 const cardNumber = ref(null);
 const dataCardFormInput = ref(null);
@@ -12,8 +12,8 @@ const videoSrc = ref('');
 const transformedCardNumber = computed(async () => {
   const config = await window.config.loadConfig();
 
-  if (config.TYPE_READER == 'dec/10') {
-    return convertDecimalBase10ToHexadecimal(parseInt(cardNumber.value));
+  if (config.TYPE_READER == '8h10d') {
+    return convert8h10dTo10h(cardNumber.value);
   }
 
   return cardNumber.value ? formatCardNumber(cardNumber.value) : '';

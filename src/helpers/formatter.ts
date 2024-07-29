@@ -128,3 +128,8 @@ export const convertDecimalBase10ToHexadecimal = (decimal: number) => {
 
   return decimalNumber.toString(16).toUpperCase();
 }
+
+export const convert8h10dTo10h = (decimal: string) => {
+
+  return 'EB' + parseInt(decimal, 10).toString(16).toUpperCase();
+}
