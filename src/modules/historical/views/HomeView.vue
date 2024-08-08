@@ -91,9 +91,9 @@ onMounted(async () => {
   }
 }
 .v-input {
-  //position: absolute;
+  position: absolute;
   bottom: 0;
   left: 0;
-  //opacity: 0;
+  opacity: 0;
 }
 </style>
